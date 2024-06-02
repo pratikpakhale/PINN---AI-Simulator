@@ -42,6 +42,12 @@ const resultsTreeData = {
   Pressure: '101325',
 };
 
+const CadModelData = {
+  Physics: {
+    Aerofoil: 'NACA 0012',
+  },
+};
+
 const Sidebar = ({
   selectedMenuItem,
   isSidebarOpen,
@@ -51,14 +57,15 @@ const Sidebar = ({
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [expandedNodes, setExpandedNodes] = useState([]);
   const [selectedLeafNode, setSelectedLeafNode] = useState(null);
-  const [treeData, setTreeData] = useState(null);
+  const [treeData, setTreeData] = useState({});
 
   useEffect(() => {
     if (selectedMenuItem === 'Dataset') setTreeData(datasetTreeData);
     else if (selectedMenuItem === 'Model Training') {
       setTreeData(modelTrainingTreeData);
       setModelParams(modelTrainingTreeData);
-    } else setTreeData(resultsTreeData);
+    } else if (selectedMenuItem === 'Results') setTreeData(resultsTreeData);
+    else if (selectedMenuItem === 'CAD Model') setTreeData(CadModelData);
 
     setExpandedNodes([]);
     setSelectedLeafNode(null);
@@ -90,6 +97,7 @@ const Sidebar = ({
   };
 
   const renderTree = (data, parentNode = '', level = 0) => {
+    console.log(data);
     return Object.entries(data)?.map(([key, value]) => {
       const node = parentNode ? `${parentNode}.${key}` : key;
       const isExpanded = expandedNodes.includes(node);
