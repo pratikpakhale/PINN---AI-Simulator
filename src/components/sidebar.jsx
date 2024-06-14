@@ -34,14 +34,6 @@ const modelTrainingTreeData = {
   },
 };
 
-const resultsTreeData = {
-  Velocity: {
-    "'u' velocity": '5.2',
-    "'v' velocity": '2.8',
-  },
-  Pressure: '101325',
-};
-
 const CadModelData = {
   Physics: {
     Aerofoil: 'NACA 0012',

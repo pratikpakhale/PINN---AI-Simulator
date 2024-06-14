@@ -21,12 +21,6 @@ const ThreeViewer = ({ selectedFile }) => {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // Create custom axes lines
-    const axesLines = new THREE.Group();
-    const materialX = new THREE.LineBasicMaterial({ color: 0xff0000 });
-    const materialY = new THREE.LineBasicMaterial({ color: 0x00ff00 });
-    const materialZ = new THREE.LineBasicMaterial({ color: 0x0000ff });
-
     const gridHelper = new THREE.GridHelper(10, 10);
     scene.add(gridHelper);
 
