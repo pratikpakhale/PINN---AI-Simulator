@@ -64,8 +64,8 @@ const Sidebar = ({
     else if (selectedMenuItem === 'Model Training') {
       setTreeData(modelTrainingTreeData);
       setModelParams(modelTrainingTreeData);
-    } else if (selectedMenuItem === 'Results') setTreeData(resultsTreeData);
-    else if (selectedMenuItem === 'CAD Model') setTreeData(CadModelData);
+      // } else if (selectedMenuItem === 'Results') setTreeData(resultsTreeData);
+    } else if (selectedMenuItem === 'CAD Model') setTreeData(CadModelData);
 
     setExpandedNodes([]);
     setSelectedLeafNode(null);
@@ -78,9 +78,18 @@ const Sidebar = ({
   };
 
   const toggleRightSidebar = node => {
-    if (selectedLeafNode === node) {
+    if (
+      selectedLeafNode === node &&
+      selectedMenuItem !== 'Results' &&
+      selectedMenuItem !== 'CAD Model'
+    ) {
       setIsRightSidebarOpen(!isRightSidebarOpen);
-    } else setIsRightSidebarOpen(true);
+    } else if (
+      selectedMenuItem !== 'Results' &&
+      selectedMenuItem !== 'CAD Model'
+    ) {
+      setIsRightSidebarOpen(true);
+    }
     setSelectedLeafNode(node);
   };
 

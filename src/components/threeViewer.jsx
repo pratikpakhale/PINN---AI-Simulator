@@ -26,23 +26,6 @@ const ThreeViewer = ({ selectedFile }) => {
     const materialX = new THREE.LineBasicMaterial({ color: 0xff0000 });
     const materialY = new THREE.LineBasicMaterial({ color: 0x00ff00 });
     const materialZ = new THREE.LineBasicMaterial({ color: 0x0000ff });
-    const geometryX = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-Infinity, 0, 0),
-      new THREE.Vector3(Infinity, 0, 0),
-    ]);
-    const geometryY = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(0, -Infinity, 0),
-      new THREE.Vector3(0, Infinity, 0),
-    ]);
-    const geometryZ = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(0, 0, -Infinity),
-      new THREE.Vector3(0, 0, Infinity),
-    ]);
-    const lineX = new THREE.Line(geometryX, materialX);
-    const lineY = new THREE.Line(geometryY, materialY);
-    const lineZ = new THREE.Line(geometryZ, materialZ);
-    axesLines.add(lineX, lineY, lineZ);
-    scene.add(axesLines);
 
     const gridHelper = new THREE.GridHelper(10, 10);
     scene.add(gridHelper);

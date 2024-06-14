@@ -1,7 +1,7 @@
 import { FaFileImport, FaDatabase, FaCogs, FaChartBar } from 'react-icons/fa';
 import { useState } from 'react';
 
-const MenuBar = ({ onMenuItemSelect, onFileSelect }) => {
+const MenuBar = ({ onMenuItemSelect, onFileSelect, onResultSelect }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
 
   const handleMenuItemClick = menuItem => {
@@ -10,37 +10,50 @@ const MenuBar = ({ onMenuItemSelect, onFileSelect }) => {
   };
 
   return (
-    <nav className='bg-gray-100 text-gray-800 p-4 border-b border-gray-400/30'>
-      <ul className='flex justify-start space-x-8'>
-        <ImportCad
-          onFileSelect={event => {
-            onFileSelect(event);
-            handleMenuItemClick('CAD Model');
-          }}
-        />
-        <li className='border-r border-gray-400/50 h-16'></li>
-        <MenuItem
-          icon={<FaDatabase size={32} />}
-          text='Dataset'
-          selected={selectedMenuItem === 'Dataset'}
-          onClick={() => handleMenuItemClick('Dataset')}
-        />
-        <li className='border-r border-gray-400/50 h-16'></li>
-        <MenuItem
-          icon={<FaCogs size={32} />}
-          text='Model Training'
-          selected={selectedMenuItem === 'Model Training'}
-          onClick={() => handleMenuItemClick('Model Training')}
-        />
-        <li className='border-r border-gray-400/50 h-16'></li>
-        <MenuItem
-          icon={<FaChartBar size={32} />}
-          text='Results'
-          selected={selectedMenuItem === 'Results'}
-          onClick={() => handleMenuItemClick('Results')}
-        />
-      </ul>
-    </nav>
+    <>
+      <nav className='bg-gray-100 text-gray-800 p-4 border-b border-gray-400/30'>
+        <ul className='flex justify-start space-x-8'>
+          <ImportCad
+            onFileSelect={event => {
+              onFileSelect(event);
+              handleMenuItemClick('CAD Model');
+            }}
+          />
+          <li className='border-r border-gray-400/50 h-16'></li>
+          <MenuItem
+            icon={<FaDatabase size={32} />}
+            text='Dataset'
+            selected={selectedMenuItem === 'Dataset'}
+            onClick={() => handleMenuItemClick('Dataset')}
+          />
+          <li className='border-r border-gray-400/50 h-16'></li>
+          <MenuItem
+            icon={<FaCogs size={32} />}
+            text='Model Training'
+            selected={selectedMenuItem === 'Model Training'}
+            onClick={() => handleMenuItemClick('Model Training')}
+          />
+          <li className='border-r border-gray-400/50 h-16'></li>
+          <MenuItem
+            icon={<FaChartBar size={32} />}
+            text='Results'
+            selected={selectedMenuItem === 'Results'}
+            onClick={() => handleMenuItemClick('Results')}
+          />
+        </ul>
+      </nav>
+      {/* small menu bar  */}
+      {selectedMenuItem === 'Results' && (
+        <div className='px-10 py-2 bg-gray-100/50'>
+          {/* Choose Results to Display: */}
+          <select className='bg-gray-200 mx-2 px-1' onChange={onResultSelect}>
+            <option>u Velocity</option>
+            <option>v Velocity</option>
+            <option>Pressure</option>
+          </select>
+        </div>
+      )}
+    </>
   );
 };
 

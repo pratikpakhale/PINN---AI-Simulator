@@ -4,7 +4,6 @@ import Sidebar from './components/sidebar';
 import ThreeViewer from './components/threeViewer';
 import NeuralNetViewer from './components/neuralNetViewer';
 import ImageViewer from './components/imageViewer';
-import ResultsViewer from './components/resultsViewer';
 
 export default function App() {
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
@@ -13,9 +12,15 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [modelParams, setModelParams] = useState(null);
 
+  const [selectedResult, setSelectedResult] = useState('u_velocity');
+
   const handleMenuItemSelect = menuItem => {
     setSelectedMenuItem(menuItem);
-    setIsSidebarOpen(true);
+    if (menuItem != 'Results') {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleFileSelect = event => {
@@ -27,6 +32,21 @@ export default function App() {
       <MenuBar
         onMenuItemSelect={handleMenuItemSelect}
         onFileSelect={handleFileSelect}
+        onResultSelect={e => {
+          switch (e.target.value) {
+            case 'u Velocity':
+              setSelectedResult('u_velocity');
+              break;
+            case 'v Velocity':
+              setSelectedResult('v_velocity');
+              break;
+            case 'Pressure':
+              setSelectedResult('pressure');
+              break;
+            default:
+              setSelectedResult('u_velocity');
+          }
+        }}
       />
       <div className='flex'>
         <Sidebar
@@ -45,7 +65,9 @@ export default function App() {
           {selectedMenuItem === 'Model Training' && (
             <NeuralNetViewer modelTrainingTreeData={modelParams} />
           )}
-          {selectedMenuItem === 'Results' && <ResultsViewer />}
+          {selectedMenuItem === 'Results' && (
+            <ImageViewer imageUrl={selectedResult + '.png'} />
+          )}
         </main>
       </div>
     </div>
