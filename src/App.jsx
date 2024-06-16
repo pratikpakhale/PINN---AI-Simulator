@@ -55,7 +55,7 @@ export default function App() {
           setIsSidebarOpen={setIsSidebarOpen}
           setModelParams={setModelParams}
         />
-        <main className='flex-1'>
+        <main className='flex h-full overflow-clip'>
           {selectedMenuItem === 'CAD Model' && (
             <ThreeViewer selectedFile={selectedFile} />
           )}
