@@ -1,10 +1,10 @@
 const ImageViewer = ({ imageUrl }) => {
   return (
-    <div className='h-full w-full flex justify-center '>
+    <div className='h-auto w-full flex justify-center items-center '>
       <img
         src={imageUrl}
         alt='Dataset'
-        style={{ maxWidth: '80%', maxHeight: '80%' }}
+        style={{ maxWidth: '100%', maxHeight: '100%' }}
       />
     </div>
   );
