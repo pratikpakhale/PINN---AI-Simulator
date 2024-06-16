@@ -7,10 +7,30 @@ const datasetTreeData = {
   },
   'Boundary Conditions': {
     Inlet: {
-      'Velocity (m/s)': '10',
+      type: {
+        'Velocity (m/s)': '10',
+        'Pressure (atm)': '1',
+        'Mass (kg)': '200',
+        'Volume (m^3))': '300',
+      },
+      input: {
+        key: 'Velocity (m/s)',
+        value: '10',
+      },
+      showDirect: true,
     },
     Outlet: {
-      'Pressure (atm)': '1',
+      type: {
+        'Velocity (m/s)': '10',
+        'Pressure (atm)': '1',
+        'Mass (kg)': '200',
+        'Volume (m^3))': '300',
+      },
+      input: {
+        key: 'Pressure (atm)',
+        value: '1',
+      },
+      showDirect: true,
     },
     Symmetry: 'Yes',
     Wall: 'No-slip',
@@ -35,8 +55,11 @@ const modelTrainingTreeData = {
 };
 
 const CadModelData = {
-  Physics: {
-    Aerofoil: 'NACA 0012',
+  Airfoil: {
+    Inlet: '',
+    Outlet: '',
+    Wall: '',
+    Symmetry: '',
   },
 };
 
@@ -50,6 +73,8 @@ const Sidebar = ({
   const [expandedNodes, setExpandedNodes] = useState([]);
   const [selectedLeafNode, setSelectedLeafNode] = useState(null);
   const [treeData, setTreeData] = useState({});
+
+  const [selectedInputType, setSelectedInputType] = useState('Velocity (m/s)');
 
   useEffect(() => {
     if (selectedMenuItem === 'Dataset') setTreeData(datasetTreeData);
@@ -102,7 +127,7 @@ const Sidebar = ({
     return Object.entries(data)?.map(([key, value]) => {
       const node = parentNode ? `${parentNode}.${key}` : key;
       const isExpanded = expandedNodes.includes(node);
-      const isLeaf = typeof value !== 'object';
+      const isLeaf = typeof value !== 'object' || value?.showDirect === true;
 
       return (
         <div key={node} className='relative'>
@@ -150,6 +175,8 @@ const Sidebar = ({
     // if (selectedMenuItem === 'Model Training') setModelParams({ ...obj });
   };
 
+  // console.log(Object.entries(getLeafNodeValue(selectedLeafNode)?.type || {}));
+
   return (
     <div className='flex h-screen'>
       {isSidebarOpen && (
@@ -171,18 +198,49 @@ const Sidebar = ({
       {isRightSidebarOpen && (
         <aside className='w-64 bg-gray-100 text-gray-800 p-4'>
           <div className='mb-4'>
-            <label htmlFor='leafNodeInput' className='block font-bold mb-1'>
-              {selectedLeafNode}
-            </label>
-            <input
-              type='text'
-              id='leafNodeInput'
-              className='w-full px-2 py-1 border border-gray-300 rounded'
-              value={getLeafNodeValue(selectedLeafNode) || ''}
-              onChange={e =>
-                updateLeafNodeValue(selectedLeafNode, e.target.value)
-              }
-            />
+            {typeof getLeafNodeValue(selectedLeafNode) === 'object' ? (
+              <>
+                Type:
+                <select
+                  className='bg-gray-200 m-2 px-1'
+                  onChange={e => setSelectedInputType(e.target.value)}
+                >
+                  {Object.keys(getLeafNodeValue(selectedLeafNode)?.type)?.map(
+                    (type, index) => (
+                      <option key={index}>{type}</option>
+                    )
+                  )}
+                </select>
+                <label htmlFor='leafNodeInput' className='block font-bold mb-1'>
+                  {selectedInputType}
+                </label>
+                <input
+                  type='text'
+                  id='leafNodeInput'
+                  className='w-full px-2 py-1 border border-gray-300 rounded'
+                  value={
+                    getLeafNodeValue(selectedLeafNode)?.type[
+                      selectedInputType
+                    ] || ''
+                  }
+                />
+              </>
+            ) : (
+              <>
+                <label htmlFor='leafNodeInput' className='block font-bold mb-1'>
+                  {selectedLeafNode}
+                </label>
+                <input
+                  type='text'
+                  id='leafNodeInput'
+                  className='w-full px-2 py-1 border border-gray-300 rounded'
+                  value={getLeafNodeValue(selectedLeafNode) || ''}
+                  onChange={e =>
+                    updateLeafNodeValue(selectedLeafNode, e.target.value)
+                  }
+                />
+              </>
+            )}
           </div>
         </aside>
       )}

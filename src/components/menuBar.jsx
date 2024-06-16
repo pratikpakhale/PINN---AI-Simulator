@@ -45,7 +45,7 @@ const MenuBar = ({ onMenuItemSelect, onFileSelect, onResultSelect }) => {
       {/* small menu bar  */}
       {selectedMenuItem === 'Results' && (
         <div className='px-10 py-2 bg-gray-100/50'>
-          {/* Choose Results to Display: */}
+          Results:
           <select className='bg-gray-200 mx-2 px-1' onChange={onResultSelect}>
             <option>u Velocity</option>
             <option>v Velocity</option>

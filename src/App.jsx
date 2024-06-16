@@ -63,7 +63,7 @@ export default function App() {
             <ImageViewer imageUrl='/dataset.png' />
           )}
           {selectedMenuItem === 'Model Training' && (
-            <NeuralNetViewer modelTrainingTreeData={modelParams} />
+            <ImageViewer imageUrl='/model.png' />
           )}
           {selectedMenuItem === 'Results' && (
             <ImageViewer imageUrl={selectedResult + '.png'} />
