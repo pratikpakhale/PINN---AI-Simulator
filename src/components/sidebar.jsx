@@ -2,6 +2,31 @@ import { useState, useEffect } from 'react';
 import { FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 
 const datasetTreeData = {
+  Physics: {
+    dropdown: ['0', '1', '2'],
+  },
+  Materials: {
+    dropdown: ['air', 'water'],
+  },
+  Results: {
+    Plots: {
+      'Data-Sources': {
+        check: {
+          'x-velocity': 'checked',
+          'y-velocity': 'checked',
+          pressure: 'checked',
+        },
+        showDirect: true,
+      },
+      Loss: {
+        check: {
+          'train loss': 'checked',
+          'test loss': 'checked',
+        },
+        showDirect: true,
+      },
+    },
+  },
   'Collocation Points': {
     'Set Points': '100',
   },
@@ -45,9 +70,36 @@ const modelTrainingTreeData = {
     'Hidden Layer Neurons': '24',
   },
   Functions: {
-    'Activation Function': 'ReLU',
-    Initializer: 'Xavier',
-    Optimizer: 'Adam',
+    'Activation Function': {
+      type: {
+        ReLU: '',
+      },
+      input: {
+        key: 'Activation Function',
+        value: 'ReLu',
+      },
+      showDirect: true,
+    },
+    Initializer: {
+      type: {
+        Xavier: '',
+      },
+      input: {
+        key: 'Initializer',
+        value: 'ReLu',
+      },
+      showDirect: true,
+    },
+    Optimizer: {
+      type: {
+        Adam: '',
+      },
+      input: {
+        key: 'Optimizer',
+        value: 'ReLu',
+      },
+      showDirect: true,
+    },
   },
   Hyperparameters: {
     'Iterations (Epochs)': '100',
@@ -74,7 +126,7 @@ const Sidebar = ({
   const [selectedLeafNode, setSelectedLeafNode] = useState(null);
   const [treeData, setTreeData] = useState({});
 
-  const [selectedInputType, setSelectedInputType] = useState('Velocity (m/s)');
+  const [selectedInputType, setSelectedInputType] = useState();
 
   useEffect(() => {
     if (selectedMenuItem === 'Dataset') setTreeData(datasetTreeData);
@@ -87,6 +139,7 @@ const Sidebar = ({
     setExpandedNodes([]);
     setSelectedLeafNode(null);
     setIsRightSidebarOpen(false);
+    setSelectedInputType('');
   }, [selectedMenuItem, setModelParams]);
 
   const toggleLeftSidebar = () => {
@@ -123,11 +176,13 @@ const Sidebar = ({
   };
 
   const renderTree = (data, parentNode = '', level = 0) => {
-    console.log(data);
-    return Object.entries(data)?.map(([key, value]) => {
+    if (!data) return null; // Add this check to prevent errors
+
+    return Object.entries(data).map(([key, value]) => {
       const node = parentNode ? `${parentNode}.${key}` : key;
       const isExpanded = expandedNodes.includes(node);
       const isLeaf = typeof value !== 'object' || value?.showDirect === true;
+      const isDropDown = value?.dropdown?.length > 0;
 
       return (
         <div key={node} className='relative'>
@@ -145,9 +200,40 @@ const Sidebar = ({
             ) : null}
             <span>{key}</span>
           </div>
-          {isExpanded && !isLeaf && (
+          {isExpanded && !isLeaf && !isDropDown && (
             <div className='ml-4 border-l border-gray-400 relative'>
               <div className='pl-4'>{renderTree(value, node, level + 1)}</div>
+            </div>
+          )}
+          {isExpanded && isDropDown && (
+            <div className='ml-4'>
+              <select className='bg-gray-200 m-2 px-1'>
+                {value.dropdown.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {isExpanded && key === 'Data-Sources' && (
+            <div className='ml-4'>
+              {Object.entries(value.check || {}).map(
+                ([checkKey, checkValue]) => (
+                  <div key={checkKey} className='flex items-center'>
+                    <input
+                      type='checkbox'
+                      checked={checkValue === 'checked'}
+                      onChange={() => {
+                        value.check[checkKey] =
+                          checkValue === 'checked' ? 'unchecked' : 'checked';
+                        setTreeData({ ...treeData });
+                      }}
+                    />
+                    <span className='ml-2'>{checkKey}</span>
+                  </div>
+                )
+              )}
             </div>
           )}
         </div>
@@ -156,10 +242,12 @@ const Sidebar = ({
   };
 
   const getLeafNodeValue = node => {
-    const path = node?.split('.');
+    if (!node) return null; // Add this check to prevent errors
+    const path = node.split('.');
     let value = treeData;
-    for (let i = 0; i < path?.length; i++) {
+    for (let i = 0; i < path.length; i++) {
       value = value[path[i]];
+      if (value === undefined) return null; // Add this check to prevent errors
     }
     return value;
   };
@@ -172,7 +260,6 @@ const Sidebar = ({
     }
     obj[path[path.length - 1]] = newValue;
     setTreeData({ ...treeData });
-    // if (selectedMenuItem === 'Model Training') setModelParams({ ...obj });
   };
 
   // console.log(Object.entries(getLeafNodeValue(selectedLeafNode)?.type || {}));
@@ -198,7 +285,8 @@ const Sidebar = ({
       {isRightSidebarOpen && (
         <aside className='w-64 bg-gray-100 text-gray-800 p-4'>
           <div className='mb-4'>
-            {typeof getLeafNodeValue(selectedLeafNode) === 'object' ? (
+            {typeof getLeafNodeValue(selectedLeafNode) === 'object' &&
+            getLeafNodeValue(selectedLeafNode)?.type ? (
               <>
                 Type:
                 <select
@@ -224,6 +312,25 @@ const Sidebar = ({
                     ] || ''
                   }
                 />
+              </>
+            ) : getLeafNodeValue(selectedLeafNode)?.check ? (
+              <>
+                {Object.entries(getLeafNodeValue(selectedLeafNode)?.check).map(
+                  ([checkKey, checkValue]) => (
+                    <div key={checkKey} className='flex items-center'>
+                      <input
+                        type='checkbox'
+                        checked={checkValue === 'checked'}
+                        onChange={() => {
+                          getLeafNodeValue(selectedLeafNode).check[checkKey] =
+                            checkValue === 'checked' ? 'unchecked' : 'checked';
+                          setTreeData({ ...treeData });
+                        }}
+                      />
+                      <span className='ml-2'>{checkKey}</span>
+                    </div>
+                  )
+                )}
               </>
             ) : (
               <>
