@@ -299,19 +299,28 @@ const Sidebar = ({
                     )
                   )}
                 </select>
-                <label htmlFor='leafNodeInput' className='block font-bold mb-1'>
-                  {selectedInputType}
-                </label>
-                <input
-                  type='text'
-                  id='leafNodeInput'
-                  className='w-full px-2 py-1 border border-gray-300 rounded'
-                  value={
-                    getLeafNodeValue(selectedLeafNode)?.type[
-                      selectedInputType
-                    ] || ''
-                  }
-                />
+                {getLeafNodeValue(selectedLeafNode)?.type[
+                  selectedInputType
+                ] && (
+                  <>
+                    <label
+                      htmlFor='leafNodeInput'
+                      className='block font-bold mb-1'
+                    >
+                      {selectedInputType}
+                    </label>
+                    <input
+                      type='text'
+                      id='leafNodeInput'
+                      className='w-full px-2 py-1 border border-gray-300 rounded'
+                      value={
+                        getLeafNodeValue(selectedLeafNode)?.type[
+                          selectedInputType
+                        ] || ''
+                      }
+                    />
+                  </>
+                )}
               </>
             ) : getLeafNodeValue(selectedLeafNode)?.check ? (
               <>
